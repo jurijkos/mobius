@@ -22,6 +22,22 @@ class MobiusInteractive extends Component {
     b: math.complex(2, 5),
     c: math.complex(2, 5),
     d: math.complex(1, 5),
+    a_str: {
+      re: '1',
+      im: '5',
+    },
+    b_str: {
+      re: '2',
+      im: '5',
+    },
+    c_str: {
+      re: '2',
+      im: '5',
+    },
+    d_str: {
+      re: '1',
+      im: '5',
+    },
     points: [] 
   };
 
@@ -240,8 +256,15 @@ class MobiusInteractive extends Component {
 
     
 
-    const { p1, p2, p3, p4, minX, maxX, minY, maxY } = this.state;
+    const { minX, maxX, minY, maxY, points } = this.state;
     const borderCordinates = { minX, maxX, minY, maxY };
+    for (let i = 0; i < points.length; i++) {
+      this.drawPointName(ctx, this.calculateRasterPosition2(points[i].re, points[i].im, borderCordinates), `p${i+1}`);
+      if (mobiusBorderValues) {
+        const x = this.calculatePoint(points[i])
+        this.drawPointName(ctx2, this.calculateRasterPosition2(x.re, x.im, mobiusBorderValues), `p${i+1}`)
+      }
+    }
     // this.drawPointName(ctx, this.calculateRasterPosition2(p1.re, p1.im, borderCordinates), 'p1');
     // this.drawPointName(ctx, this.calculateRasterPosition2(p2.re, p2.im, borderCordinates), 'p2');
     // this.drawPointName(ctx, this.calculateRasterPosition2(p3.re, p3.im, borderCordinates), 'p3');
@@ -289,20 +312,48 @@ class MobiusInteractive extends Component {
     // }
   }
 
-  onChangeHandler= (el, isRealPart, e) => {
-    let value = parseFloat(e.target.value);
-    if (isNaN(value)) {
-      value = 0
-    }
+  // onChangeHandler= (el, isRealPart, e) => {
+  //   let value = parseFloat(e.target.value);
+  //   if (isNaN(value)) {
+  //     value = 0
+  //   }
+  //   const num = this.state[el];
+  //   if (isRealPart) {
+  //     num.re = value;
+  //   }
+  //   else {
+  //     num.im = value;
+  //   }
+  //   this.setState({
+  //     el: num
+  //   })
+  //   console.log(this.state);
+  //   this.redraw();
+  // }
+
+  onChangeHandler = (el, isRealPart, e) => {
+
+    let value = e.target.value;
+    const val = parseFloat(value)
+    const elStr = `${el}_str`
+
+    const numStr = this.state[elStr];
     const num = this.state[el];
     if (isRealPart) {
-      num.re = value;
+      numStr.re = value;
+      if (!isNaN(val)) {
+        num.re = val;
+      }
     }
     else {
-      num.im = value;
+      numStr.im = value;
+      if (!isNaN(val)) {
+        num.im = val;
+      }
     }
     this.setState({
-      el: num
+      el: num,
+      elStr: numStr
     })
     console.log(this.state);
     this.redraw();
@@ -355,11 +406,11 @@ class MobiusInteractive extends Component {
               <StyledInput 
                 type="text"
                 onChange={(e) => {this.onChangeHandler('a', true, e)}}
-                value={this.state.a.re}
+                value={this.state.a_str.re}
               /> + 
               <StyledInput type="text"
                 onChange={(e) => {this.onChangeHandler('a', false, e)}}
-                value={this.state.a.im !== 0 ? this.state.a.im : ''}
+                value={this.state.a_str.im}
               /> i
             </div>
             <div>
@@ -367,12 +418,12 @@ class MobiusInteractive extends Component {
               <StyledInput
                 type="text"
                 onChange={(e) => {this.onChangeHandler('b', true, e)}}
-                value={this.state.b.re}
+                value={this.state.b_str.re}
               /> + 
               <StyledInput
                 type="text"
                 onChange={(e) => {this.onChangeHandler('b', false, e)}}
-                value={this.state.b.im}  
+                value={this.state.b_str.im}  
               /> i
             </div>
             <div>
@@ -380,12 +431,12 @@ class MobiusInteractive extends Component {
               <StyledInput
                 type="text"
                 onChange={(e) => {this.onChangeHandler('c', true, e)}}
-                value={this.state.c.re}
+                value={this.state.c_str.re}
               /> + 
               <StyledInput
                 type="text"
                 onChange={(e) => {this.onChangeHandler('c', false, e)}}
-                value={this.state.c.im}
+                value={this.state.c_str.im}
               /> i
             </div>
             <div>
@@ -393,12 +444,12 @@ class MobiusInteractive extends Component {
               <StyledInput 
                 type="text" 
                 onChange={(e) => {this.onChangeHandler('d', true, e)}}
-                value={this.state.d.re}
+                value={this.state.d_str.re}
               /> + 
               <StyledInput
                 type="text" 
                 onChange={(e) => {this.onChangeHandler('d', false, e)}}
-                value={this.state.d.im}
+                value={this.state.d_str.im}
               /> i
             </div>
           </FlexContainer>
