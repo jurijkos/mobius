@@ -2,7 +2,7 @@
   "name": "mobius",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://jurijkos.github.io/react-gh-pages",
+  "homepage": "http://jurijkos.github.io/mobius",
   "dependencies": {
     "gh-pages": "^2.0.1",
     "mathjs": "^5.2.3",
